@@ -1,0 +1,45 @@
+/* static/style.css */
+
+.body {
+    background-color: #989a9c; /* Color de fondo claro */
+}
+.cocktail-img {
+    max-height: 200px;
+    object-fit: cover;
+}
+
+.details-img {
+    max-height: 500px;
+    object-fit: cover;
+}
+
+
+.app-footer1 {
+    background-color: #004b92;
+    padding: 5px; 
+    border-radius: 5px;
+    margin-top: 0px; 
+    color: white;
+    border-radius: 30px;
+    font-size: 22px;
+}
+.app-footer2 {
+    background-color: #004b92;
+    padding: 5px; 
+    border-radius: 5px;
+    margin-top: 10px; 
+    color: white;
+    border-radius: 30px;
+    font-size:22px;
+}
+.app-footer3 {
+    background-color: #004b92;
+    padding: 5px; 
+    border-radius: 5px;
+    margin-top: 10px; 
+    color: white;
+    border-radius: 30px;
+    font-size:22px;
+}
+
+

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Cócteles - TheCocktailDB</title>
+    <!-- Enlace al CSS de Bootstrap via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"  rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4 text-center">Algunos de los Cocteles Mas Populares</h1>
+
+        <!-- Galería de Cócteles -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for cocktail in popular_cocktails %}
+                <div class="col">
+                    <a href="{{ url_for('details', idDrink=cocktail.idDrink) }}" class="text-decoration-none">
+                        <div class="card h-100">
+                            <img src="{{ cocktail.strDrinkThumb }}" class="card-img-top cocktail-img" alt="{{ cocktail.strDrink }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ cocktail.strDrink }}</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+        <br>
+        <h1 class="mb-4 text-center">Buscador de Cocteles By Luis Lopez</h1>
+        <!-- Formulario de Búsqueda -->
+        <form method="GET" action="{{ url_for('index') }}" class="mb-4">
+            <br>
+            <div class="input-group">
+                <br>
+                <br>
+                <input type="text" class="form-control" name="drink_name" placeholder="Buscar Coctel" value="{{ search_query if search_query else '' }}" list="suggestions" id="drink-search">
+                <br>
+                <br>
+                <button class="btn btn-primary" type="submit">Buscar Cóctel</button>
+            </div>
+        </form>
+
+        <!-- Lista de sugerencias -->
+        <datalist id="Cocteles Sugeridos">
+            <option value="Margarita">Margarita</option>
+            <option value="Mojito">Mojito</option>
+            <option value="Vodka Tónica">Vodka Tónica</option>
+            <option value="Martini Dry">Martini Dry</option>
+            <option value="Long Island Iced Tea">Long Island Iced Tea</option>
+            <option value="Caipirinha">Caipirinha</option>
+            <option value="Tequila Sunrise">Tequila Sunrise</option>
+            <option value="Whiskey Sour">Whiskey Sour</option>
+            <option value="Gin and Tonic">Gin and Tonic</option>
+            <option value="Bloody Mary">Bloody Mary</option>
+            <option value="Sex on the Beach">Sex on the Beach</option>
+            <option value="Screwdriver">Screwdriver</option>
+            <option value="White Russian">White Russian</option>
+            <option value="Rum and Coke">Rum and Coke</option>
+            <option value="Old Fashioned">Old Fashioned</option>
+            <option value="Daiquiri">Daiquiri</option>
+            <option value="Negroni">Negroni</option>
+            <option value="Moscow Mule">Moscow Mule</option>
+            <option value="Blue Hawaiian">Blue Hawaiian</option>
+            <option value="Blackberry Basil Smash">Blackberry Basil Smash</option>
+            <option value="Pina Colada">Pina Colada</option>
+            <option value="Cosmopolitan">Cosmopolitan</option>
+            <option value="Irish Coffee">Irish Coffee</option>
+            <option value="Manhattan">Manhattan</option>
+            <option value="Singapore Sling">Singapore Sling</option>
+            <option value="Kamikaze">Kamikane</option>
+            <option value="Mai Tai">Mai Tai</option>
+            <option value="Cuba Libre">Cuba Libre</option>
+            <option value="Screwdriver">Screwdriver</option>
+            <option value="Tom Collins">Tom Collins</option>
+            <option value="Aviation">Aviation</option>
+            <option value="French 75">French 75</option>
+            <option value="Kamikaze">Kamikaze</option>
+            <option value="Aviation">Aviation</option>
+            <option value="Moscow Mule">Moscow Mule</option>
+        </datalist>
+
+        <!-- Sección de Resultados -->
+        {% if search_query %} {# Solo mostrar resultados si se realizó una búsqueda #}
+            <h2 class="mb-3">Resultados para "{{ search_query }}"</h2>
+
+            {% if cocktails %} {# Mostrar la lista de cócteles si la API devolvió resultados #}
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"> {# Grid responsivo con Bootstrap #}
+                    {# Iterar sobre la lista de cócteles #}
+                    {% for cocktail in cocktails %}
+                        <div class="col">
+                            <div class="card h-100"> {# Tarjeta de Bootstrap #}
+                                {% if cocktail.strDrinkThumb %} {# Mostrar imagen si existe #}
+                                    <img src="{{ cocktail.strDrinkThumb }}" class="card-img-top cocktail-img" alt="{{ cocktail.strDrink }}">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ cocktail.strDrink }}</h5>
+                                    {% if cocktail.strCategory %}<p class="card-text"><small class="text-muted">{{ cocktail.strCategory }}</small></p>{% endif %}
+                                    {% if cocktail.strAlcoholic %}<p class="card-text"><small class="text-muted">({{ cocktail.strAlcoholic }})</small></p>{% endif %}
+
+                                    <h6>Ingredientes:</h6>
+                                    <ul>
+                                        {# TheCocktailDB devuelve ingredientes y medidas numerados (strIngredient1, strMeasure1, etc.) #}
+                                        {% for i in range(1, 16) %} {# Itera del 1 al 15 (máximo de ingredientes en la API) #}
+                                            {% set ingredient = cocktail['strIngredient' ~ i] %} {# Obtiene la clave strIngredient1, strIngredient2, etc. #}
+                                            {% set measure = cocktail['strMeasure' ~ i] %}       {# Obtiene la clave strMeasure1, strMeasure2, etc. #}
+                                            {% if ingredient %} {# Solo mostrar si el ingrediente existe (no es nulo o vacío) #}
+                                                <li>
+                                                    {{ measure if measure }} {{ ingredient }} {# Mostrar medida si existe, seguido del ingrediente #}
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+
+                                    <h6>Instrucciones:</h6>
+                                    <p class="card-text">{{ cocktail.strInstructions }}</p>
+
+                                    {% if cocktail.idDrink %}<p class="card-text"><small class="text-muted">ID: {{ cocktail.idDrink }}</small></p>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% elif cocktails is None %}
+                 <div class="alert alert-danger" role="alert">
+                     Error al comunicar con la API o respuesta inesperada.
+                 </div>
+            {% else %} {# Si cocktails es una lista vacía [], significa que no hubo resultados #}
+                <div class="alert alert-warning" role="alert">
+                    No se encontraron cócteles con el nombre "{{ search_query }}". Intenta otra búsqueda.
+                </div>
+            {% endif %}
+        {% else %}
+             {# Mensaje inicial cuando no se ha buscado nada #}
+             <div class="alert alert-info" role="alert">
+                Escribe el nombre de un cóctel en el campo de búsqueda para encontrarlo.
+             </div>
+        {% endif %}
+
+        <div class="mt-1 text-center app-footer1">
+             <p>Esta aplicación usa la API de TheCocktailDB con patrón MVC y una plantilla de estilo de Bootstrap.</p>
+        </div>
+        <div class="mt-1 text-center app-footer2">
+             <p>Desarrollo de Actividad 4 Unidad 2</p>
+        </div>
+        <div class="mt-1 text-center app-footer3">
+             <p>Ingenieria Web II - Uniminuto</p>
+        </div>
+    </div>
+    </body>
+</html>
